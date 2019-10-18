@@ -1,0 +1,13 @@
+{
+    "editor.formatOnSave": true,
+    "vetur.format.defaultFormatterOptions": {
+        "prettier": {
+            "singleQuote": true
+        }
+    },
+    "prettier.arrowParens": "always",
+    "prettier.jsxSingleQuote": true,
+    "vetur.format.defaultFormatter.js": "prettier-eslint",
+    "prettier.semi": false,
+    "prettier.singleQuote": true,
+}
