@@ -54,16 +54,17 @@ const dataO = [
   }
 ]
 
-const Charts = (props) => {
+const Charts = props => {
   const data = [...props.data]
   var labels = data[0]
-  var output = data.slice(1).map((item) =>
+  var output = data.slice(1).map(item =>
     item.reduce((obj, val, index) => {
       obj[labels[index]] = val
       return obj
     }, {})
   )
-  console.log('output', output.map((x) => Object.values(x)[0]))
+
+  // console.log('output', output.map((x) => Object.values(x)[0]))
 
   return (
     <LineChart
@@ -78,19 +79,19 @@ const Charts = (props) => {
       }}
     >
       {/* <CartesianGrid strokeDasharray='3 3' /> */}
-      <XAxis dataKey={output.map((x) => Object.values(x)[0])} />
+      <XAxis dataKey={output.map(x => Object.values(x)[0])} />
       <YAxis />
       <Tooltip />
       <Legend />
       <Line
         type='monotone'
-        dataKey={output.map((x) => Object.keys(x)[1])[0]}
+        dataKey={output.map(x => Object.keys(x)[1])[0]}
         stroke='#8884d8'
         activeDot={{ r: 8 }}
       />
       <Line
         type='monotone'
-        dataKey={output.map((x) => Object.keys(x)[2])[0]}
+        dataKey={output.map(x => Object.keys(x)[2])[0]}
         stroke='#82ca9d'
       />
     </LineChart>

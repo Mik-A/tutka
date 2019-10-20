@@ -1,10 +1,10 @@
-import React, { Fragment } from "react";
-import DmsMain from "./DmsMain";
+import React, { Fragment } from 'react'
+import DataHandlingComponent from './DataHandlingComponent'
 
 const Frontpage = () => (
   <Fragment>
-    <DmsMain />
+    <DataHandlingComponent />
   </Fragment>
-);
+)
 
-export default Frontpage;
+export default Frontpage
