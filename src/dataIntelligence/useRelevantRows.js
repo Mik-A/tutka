@@ -20,7 +20,7 @@ export const useRelevantRows = data => {
     ]
   }
 
-  return arr.splice(getIndex()[0], getIndex()[1])
+  return arr.slice(getIndex()[0], getIndex()[1])
 }
 
 export default useRelevantRows
