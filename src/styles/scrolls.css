@@ -1,7 +1,7 @@
 /* Variables */
 :root {
-    --scrollbar-size: 1.375em;
-    --scrollbar-minlength: 2em;
+    --scrollbar-size: 6px;
+    --scrollbar-minlength: 12px;
     /* Minimum length of scrollbar thumb (width of horizontal, height of vertical) */
     --scrollbar-ff-width: thin;
     /* FF-only accepts auto, thin, none */
@@ -55,10 +55,11 @@
     min-width: var(--scrollbar-minlength);
 }
 
+/* 
 .layout-scrollbar::-webkit-scrollbar-corner {
     display: none;
 }
 
 .layout-scrollbar::-webkit-scrollbar-button {
     display: none;
-}
+} */
