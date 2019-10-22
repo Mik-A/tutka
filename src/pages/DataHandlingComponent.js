@@ -12,11 +12,11 @@ class DataHandlingComponent extends React.Component {
     fileName: 'No file selected'
   }
 
-  handleFile = file => {
+  handleFile = (file) => {
     /* Boilerplate to set up FileReader */
     const reader = new FileReader()
     const rABS = !!reader.readAsBinaryString
-    reader.onload = e => {
+    reader.onload = (e) => {
       /* Parse data */
       const bstr = e.target.result
       const wb = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' })
@@ -80,9 +80,15 @@ class DataHandlingComponent extends React.Component {
               data={useRelevantRows(this.state.data)}
               cols={this.state.cols}
             />
-            <div menuName='Json'>Her comes JSON</div>
-            <div menuName='Api'>Her comes API links etc</div>
-            <div menuName='Plugins'>Her comes WP and other plugins</div>
+            <div menuName='Json'>
+              Here comes JSON<p>here</p>
+            </div>
+            <div menuName='Api'>
+              Here comes API links etc<p>here</p>
+            </div>
+            <div menuName='Plugins'>
+              Here comes WP and other plugins<p>here</p>
+            </div>
           </Slider>
         )}
       </DragDropFile>
@@ -95,19 +101,24 @@ class DataHandlingComponent extends React.Component {
   usage: <DragDropFile handleFile={handleFile}>...</DragDropFile>
     handleFile(file:File):void;
 */
-const DragDropFile = props => {
-  const suppress = evt => {
+const DragDropFile = (props) => {
+  const suppress = (evt) => {
     evt.stopPropagation()
     evt.preventDefault()
   }
-  const onDrop = evt => {
+  const onDrop = (evt) => {
     evt.stopPropagation()
     evt.preventDefault()
     const files = evt.dataTransfer.files
     if (files && files[0]) this.props.handleFile(files[0])
   }
   return (
-    <div onDrop={onDrop} onDragEnter={suppress} onDragOver={suppress}>
+    <div
+      className='logic'
+      onDrop={onDrop}
+      onDragEnter={suppress}
+      onDragOver={suppress}
+    >
       {props.children}
     </div>
   )
@@ -118,30 +129,42 @@ const DragDropFile = props => {
   usage: <DataInput handleFile={callback} />
     handleFile(file:File):void;
 */
-const DataInput = props => {
+const DataInput = (props) => {
   console.log('props', props)
-  const handleChange = e => {
+  const handleChange = (e) => {
     const files = e.target.files
     if (files && files[0]) props.handleFile(files[0])
   }
   return (
-    <form className='form-inline'>
-      <div className='form-group'>
-        <label htmlFor='file'>
-          Upload data tables
-          <input
-            type='file'
-            className='form-control'
-            id='file'
-            accept={SheetJSFT}
-            onChange={handleChange}
-          />
-          <span style={{ padding: '0 2em', color: 'silver' }}>
-            {props.fileName}
-          </span>
-        </label>
-      </div>
-    </form>
+    <div>
+      <form className='form flex-center flex-column'>
+        <div
+          className='form-group'
+          style={
+            props.fileName !== 'No file selected'
+              ? {
+                  transform: 'scale(0.8)',
+                  transition: '0.1s linear'
+                }
+              : { marginTop: 50 }
+          }
+        >
+          <label htmlFor='file'>
+            Upload data tables
+            <input
+              type='file'
+              className='form-control'
+              id='file'
+              accept={SheetJSFT}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+        <span style={{ padding: '1em 2em', color: 'silver' }}>
+          {props.fileName}
+        </span>
+      </form>
+    </div>
   )
 }
 
@@ -151,7 +174,7 @@ const DataInput = props => {
     data:Array<Array<any> >;
     cols:Array<{name:string, key:number|string}>;
 */
-const OutTable = props => (
+const OutTable = (props) => (
   <div
     className='table-responsive'
     style={{ overflowY: 'auto', maxHeight: 500 }}
@@ -159,7 +182,7 @@ const OutTable = props => (
     <table className='table table-striped'>
       <thead>
         <tr>
-          {props.cols.map(c => (
+          {props.cols.map((c) => (
             <th key={c.key}>{c.name}</th>
           ))}
         </tr>
@@ -167,7 +190,7 @@ const OutTable = props => (
       <tbody>
         {props.data.map((r, i) => (
           <tr key={i}>
-            {props.cols.map(c => (
+            {props.cols.map((c) => (
               <td key={c.key}>{r[c.key]}</td>
             ))}
           </tr>
@@ -202,7 +225,7 @@ const SheetJSFT = [
 ]
 
 /* generate an array of column objects */
-const make_cols = refstr => {
+const make_cols = (refstr) => {
   let o = [],
     C = XLSX.utils.decode_range(refstr).e.c + 1
   for (var i = 0; i < C; ++i) o[i] = { name: XLSX.utils.encode_col(i), key: i }

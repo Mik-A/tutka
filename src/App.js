@@ -1,13 +1,13 @@
-import React from "react";
-import Header from "./routes/Header";
-import Main from "./routes/Main";
-import "./styles/common.css";
+import React, { Fragment } from 'react'
+import Header from './routes/Header'
+import Main from './routes/Main'
+import './styles/common.css'
 
 const App = () => (
-  <main>
+  <Fragment>
     <Header />
     <Main />
-  </main>
-);
+  </Fragment>
+)
 
-export default App;
+export default App
