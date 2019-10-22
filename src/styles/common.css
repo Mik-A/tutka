@@ -93,12 +93,13 @@ main {
 footer {
     position: fixed;
     bottom: 0;
-    width: 100%;
+    width: 100vw;
     height: 32px;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    justify-items: end;
     align-items: center;
-    margin: 0 2em;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0 auto;
 }
 
 .corner-borders {
