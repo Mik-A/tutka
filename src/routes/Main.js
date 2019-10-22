@@ -1,23 +1,23 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
-import Frontpage from "../pages/Frontpage";
-import Contact from "../pages/Contact";
-import SliderTest from "../pages/SliderTest";
+import Frontpage from '../pages/Frontpage'
+import Contact from '../pages/Contact'
+import SliderTest from '../pages/SliderTest'
 
 const NoPage = () => {
-  return <h3>404 - Stupid component so far</h3>;
-};
+  return <h3>404 - Stupid component so far</h3>
+}
 
 const Main = () => (
-  <main>
+  <main className='layout-cell layout-scrollbar'>
     <Switch>
-      <Route exact path="/" component={Frontpage} />
-      <Route path="/contact" component={Contact} />
-      <Route path="/slidertest" component={SliderTest} />
+      <Route exact path='/' component={Frontpage} />
+      <Route path='/contact' component={Contact} />
+      <Route path='/slidertest' component={SliderTest} />
       <Route component={NoPage} />
     </Switch>
   </main>
-);
+)
 
-export default Main;
+export default Main

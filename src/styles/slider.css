@@ -1,12 +1,7 @@
-.slider-content-main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.slider-content-item {
-    display: flex;
-    align-items: center
+.slider {
+    min-width: 50vw;
+    width: 100%;
+    max-width: 70vw;
 }
 
 .circle-small {

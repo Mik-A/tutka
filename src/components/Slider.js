@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import '../styles/slider.css'
+import '../styles/scrolls.css'
 
 const Slider = (props) => {
   const { background } = props
@@ -9,6 +10,7 @@ const Slider = (props) => {
   const sliderContent = {
     display: 'flex',
     justifyContent: 'center',
+    flex: 1,
     propsStyle
   }
 
@@ -24,7 +26,7 @@ const Slider = (props) => {
   const [count, setCount] = useState(1)
   const Block = () =>
     splittedArr[count].map((x, i) => (
-      <div className='corner-borders slider' key={i}>
+      <div className='corner-borders slider ' key={i}>
         <div className='stable'>{x}</div>
       </div>
     ))

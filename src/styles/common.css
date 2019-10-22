@@ -1,3 +1,11 @@
+#root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+
 body {
     font-family: "Source Sans Pro", sans-serif;
     font-weight: 400;
@@ -40,7 +48,7 @@ input[type="file"] {
 }
 
 header {
-    height: 4em;
+    height: 48px;
 }
 
 header nav {
@@ -78,13 +86,19 @@ header nav a.active {
 }
 
 main {
-    margin: 1rem;
+    padding: 1rem;
+    flex: 1
 }
 
-.slider {
-    min-width: 50vw;
+footer {
+    position: fixed;
+    bottom: 0;
     width: 100%;
-    max-width: 70vw;
+    height: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 2em;
 }
 
 .corner-borders {

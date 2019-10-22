@@ -114,7 +114,7 @@ const DragDropFile = (props) => {
   }
   return (
     <div
-      className='logic'
+      className='logic '
       onDrop={onDrop}
       onDragEnter={suppress}
       onDragOver={suppress}
@@ -136,35 +136,34 @@ const DataInput = (props) => {
     if (files && files[0]) props.handleFile(files[0])
   }
   return (
-    <div>
-      <form className='form flex-center flex-column'>
-        <div
-          className='form-group'
-          style={
-            props.fileName !== 'No file selected'
-              ? {
-                  transform: 'scale(0.8)',
-                  transition: '0.1s linear'
-                }
-              : { marginTop: 50 }
-          }
-        >
-          <label htmlFor='file'>
-            Upload data tables
-            <input
-              type='file'
-              className='form-control'
-              id='file'
-              accept={SheetJSFT}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <span style={{ padding: '1em 2em', color: 'silver' }}>
-          {props.fileName}
-        </span>
-      </form>
-    </div>
+    <form className='form flex-center flex-column'>
+      <div
+        className=''
+        style={
+          props.fileName !== 'No file selected'
+            ? {
+                transform: 'scale(0.75)',
+                transition: '0.1s linear',
+                marginTop: 10
+              }
+            : { marginTop: 50 }
+        }
+      >
+        <label htmlFor='file' className='form-group form-control'>
+          Upload data tables
+          <input
+            type='file'
+            className=''
+            id='file'
+            accept={SheetJSFT}
+            onChange={handleChange}
+          />
+        </label>
+      </div>
+      <div style={{ marginTop: 40, padding: '1em 2em', color: 'silver' }}>
+        {props.fileName}
+      </div>
+    </form>
   )
 }
 
@@ -175,10 +174,7 @@ const DataInput = (props) => {
     cols:Array<{name:string, key:number|string}>;
 */
 const OutTable = (props) => (
-  <div
-    className='table-responsive'
-    style={{ overflowY: 'auto', maxHeight: 500 }}
-  >
+  <div className='table-responsive'>
     <table className='table table-striped'>
       <thead>
         <tr>
