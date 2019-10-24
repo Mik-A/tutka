@@ -3,10 +3,11 @@ export const fetchData = (res) => ({
   res
 })
 
-export const fileData = (data, fileName) => ({
+export const fileData = (data, fileName, cols) => ({
   type: 'FILE_DATA',
   data,
-  fileName
+  fileName,
+  cols
 })
 
 export const closeSingle = (close) => ({

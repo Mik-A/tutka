@@ -12,12 +12,6 @@ import { FILE_TYPES } from '../constants/'
 import { fetchData, fileData } from '../reducers/'
 
 class DataHandlingComponent extends React.Component {
-  state = {
-    data: [] /* Array of Arrays e.g. [["a","b"],[1,2]] */,
-    cols: [] /* Array of column objects e.g. { name: "C", K: 2 } */,
-    fileName: 'No file selected'
-  }
-
   handleFile = (file) => {
     /* Boilerplate to set up FileReader */
     const reader = new FileReader()
@@ -32,21 +26,17 @@ class DataHandlingComponent extends React.Component {
       const ws = wb.Sheets[wsname]
       /* Convert array of arrays */
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 })
-
-      /* Update state */
-      this.setState({
-        fileName: file.name,
-        data: data,
-        cols: make_cols(ws['!ref'])
-      })
-      this.props.fileData(data, file.name, make_cols(ws['!ref']))
+      const cols = make_cols(ws['!ref'])
+      //   data: [] /* Array of Arrays e.g. [["a","b"],[1,2]] */,
+      //   cols: [] /* Array of column objects e.g. { name: "C", K: 2 } */,
+      this.props.fileData(data, file.name, cols)
     }
     if (rABS) reader.readAsBinaryString(file)
     else reader.readAsArrayBuffer(file)
   }
   exportFile = () => {
     /* convert state to workbook */
-    const ws = XLSX.utils.aoa_to_sheet(this.state.data)
+    const ws = XLSX.utils.aoa_to_sheet(this.props.uploadedData.data)
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'SheetJS')
 
@@ -54,12 +44,13 @@ class DataHandlingComponent extends React.Component {
     XLSX.writeFile(wb, 'sheetjs.xlsx')
   }
   render() {
-    console.log('props-redux', this.props)
     let data,
-      fileName = null
+      fileName,
+      cols = null
     if (this.props.uploadedData) {
       data = this.props.uploadedData.data
       fileName = this.props.uploadedData.fileName
+      cols = this.props.uploadedData.cols
     }
     return (
       <DragDropFile handleFile={this.handleFile}>
@@ -74,7 +65,7 @@ class DataHandlingComponent extends React.Component {
         {/* <div className="row">
           <div className="col-xs-12">
             <button
-              disabled={!this.state.data.length}
+              disabled={!this.props.uploadedData.data.length}
               className="btn btn-success"
               onClick={this.exportFile}
             >
@@ -82,13 +73,13 @@ class DataHandlingComponent extends React.Component {
             </button>
           </div>
         </div> */}
-        {this.state.data.length > 0 && (
+        {data && data.length > 0 && (
           <Slider>
-            <Table data={data} cols={this.state.cols} menuName='Table' />
+            <Table data={data} cols={cols} menuName='Table' />
             <Charts
               menuName='Charts'
               data={useRelevantRows(data)}
-              cols={this.state.cols}
+              //   cols={cols}
             />
             <div menuName='Json'>
               Here comes JSON<p>here</p>

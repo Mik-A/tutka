@@ -10,8 +10,11 @@ export const gallery = (state = 'Start by clicking fetch data', action) => {
   }
 }
 export const uploadedFile = (state = null, action) => {
-  console.log(action)
-  const data = { data: action.data, fileName: action.fileName }
+  const data = {
+    data: action.data,
+    fileName: action.fileName,
+    cols: action.cols
+  }
   switch (action.type) {
     case 'FILE_DATA':
       return data

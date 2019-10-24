@@ -20,20 +20,13 @@ export const handleFile = (file) => {
     const cols = make_cols(ws['!ref'])
 
     return [fileName, data1, cols]
-
-    /* Update state */
-    // this.setState({
-    //   fileName: file.name,
-    //   data: data,
-    //   cols: make_cols(ws['!ref'])
-    // })
   }
   if (rABS) reader.readAsBinaryString(file)
   else reader.readAsArrayBuffer(file)
 }
 export const exportFile = () => {
   /* convert state to workbook */
-  const ws = XLSX.utils.aoa_to_sheet(this.state.data)
+  const ws = XLSX.utils.aoa_to_sheet(this.props.uploadedData.data)
   const wb = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(wb, ws, 'SheetJS')
 
