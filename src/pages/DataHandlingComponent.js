@@ -1,9 +1,15 @@
 import React from 'react'
 import XLSX from 'xlsx'
+import { connect } from 'react-redux'
+
 import Slider from '../components/Slider'
 import Charts from '../components/Charts'
+import Table from './Table'
+import DragDropFile from '../components/DragDropFile'
 
 import useRelevantRows from '../dataIntelligence/useRelevantRows'
+import { FILE_TYPES } from '../constants/'
+import { fetchData, fileData } from '../reducers/'
 
 class DataHandlingComponent extends React.Component {
   state = {
@@ -33,6 +39,7 @@ class DataHandlingComponent extends React.Component {
         data: data,
         cols: make_cols(ws['!ref'])
       })
+      this.props.fileData(data, file.name, make_cols(ws['!ref']))
     }
     if (rABS) reader.readAsBinaryString(file)
     else reader.readAsArrayBuffer(file)
@@ -47,13 +54,20 @@ class DataHandlingComponent extends React.Component {
     XLSX.writeFile(wb, 'sheetjs.xlsx')
   }
   render() {
+    console.log('props-redux', this.props)
+    let data,
+      fileName = null
+    if (this.props.uploadedData) {
+      data = this.props.uploadedData.data
+      fileName = this.props.uploadedData.fileName
+    }
     return (
       <DragDropFile handleFile={this.handleFile}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div>
             <DataInput
               handleFile={this.handleFile}
-              fileName={this.state.fileName}
+              fileName={!fileName ? 'No file selected' : fileName}
             />
           </div>
         </div>
@@ -70,14 +84,10 @@ class DataHandlingComponent extends React.Component {
         </div> */}
         {this.state.data.length > 0 && (
           <Slider>
-            <OutTable
-              data={this.state.data}
-              cols={this.state.cols}
-              menuName='Table'
-            />
+            <Table data={data} cols={this.state.cols} menuName='Table' />
             <Charts
               menuName='Charts'
-              data={useRelevantRows(this.state.data)}
+              data={useRelevantRows(data)}
               cols={this.state.cols}
             />
             <div menuName='Json'>
@@ -97,128 +107,47 @@ class DataHandlingComponent extends React.Component {
 }
 
 /*
-  Simple HTML5 file drag-and-drop wrapper
-  usage: <DragDropFile handleFile={handleFile}>...</DragDropFile>
-    handleFile(file:File):void;
-*/
-const DragDropFile = (props) => {
-  const suppress = (evt) => {
-    evt.stopPropagation()
-    evt.preventDefault()
-  }
-  const onDrop = (evt) => {
-    evt.stopPropagation()
-    evt.preventDefault()
-    const files = evt.dataTransfer.files
-    if (files && files[0]) this.props.handleFile(files[0])
-  }
-  return (
-    <div
-      className='logic '
-      onDrop={onDrop}
-      onDragEnter={suppress}
-      onDragOver={suppress}
-    >
-      {props.children}
-    </div>
-  )
-}
-
-/*
   Simple HTML5 file input wrapper
   usage: <DataInput handleFile={callback} />
     handleFile(file:File):void;
 */
 const DataInput = (props) => {
-  console.log('props', props)
   const handleChange = (e) => {
     const files = e.target.files
     if (files && files[0]) props.handleFile(files[0])
   }
   return (
-    <form className='form flex-center flex-column'>
-      <div
-        className=''
-        style={
-          props.fileName !== 'No file selected'
-            ? {
-                transform: 'scale(0.75)',
-                transition: '0.1s linear',
-                marginTop: 10
-              }
-            : { marginTop: 50 }
-        }
-      >
-        <label htmlFor='file' className='form-group form-control'>
-          Upload data tables
-          <input
-            type='file'
-            className=''
-            id='file'
-            accept={SheetJSFT}
-            onChange={handleChange}
-          />
-        </label>
-      </div>
-      <div style={{ marginTop: 40, padding: '1em 2em', color: 'silver' }}>
-        {props.fileName}
-      </div>
-    </form>
+    <>
+      <form className='form flex-center flex-column'>
+        <div
+          style={
+            props.fileName !== 'No file selected'
+              ? {
+                  transform: 'scale(0.75)',
+                  transition: '0.1s linear',
+                  marginTop: 10
+                }
+              : { marginTop: 50 }
+          }
+        >
+          <label htmlFor='file' className='form-group form-control'>
+            Upload data tables
+            <input
+              type='file'
+              className=''
+              id='file'
+              accept={FILE_TYPES}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+        <div style={{ marginTop: 40, padding: '1em 2em', color: 'silver' }}>
+          {props.fileName}
+        </div>
+      </form>
+    </>
   )
 }
-
-/*
-  Simple HTML Table
-  usage: <OutTable data={data} cols={cols} />
-    data:Array<Array<any> >;
-    cols:Array<{name:string, key:number|string}>;
-*/
-const OutTable = (props) => (
-  <div className='table-responsive'>
-    <table className='table table-striped'>
-      <thead>
-        <tr>
-          {props.cols.map((c) => (
-            <th key={c.key}>{c.name}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {props.data.map((r, i) => (
-          <tr key={i}>
-            {props.cols.map((c) => (
-              <td key={c.key}>{r[c.key]}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-)
-
-/* list of supported file types */
-const SheetJSFT = [
-  '.xlsx',
-  '.xlsb',
-  '.xlsm',
-  '.xls',
-  '.xml',
-  '.csv',
-  '.txt',
-  '.ods',
-  '.fods',
-  '.uos',
-  '.sylk',
-  '.dif',
-  '.dbf',
-  '.prn',
-  '.qpw',
-  '.123',
-  '.wb*',
-  '.wq*',
-  '.html',
-  '.htm'
-]
 
 /* generate an array of column objects */
 const make_cols = (refstr) => {
@@ -228,4 +157,19 @@ const make_cols = (refstr) => {
   return o
 }
 
-export default DataHandlingComponent
+function mapStateToProps(state) {
+  return {
+    gallery: state.gallery,
+    uploadedData: state.uploadedFile
+  }
+}
+
+const mapDispatchToProps = {
+  //   fetchData,
+  fileData
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DataHandlingComponent)

@@ -55,7 +55,7 @@ const Slider = (props) => {
                 zIndex: 10
               }
             )}
-            className={count !== i && 'tabs'}
+            className={count !== i ? 'tabs' : undefined}
             onClick={() => setCount(i)}
           >
             {props.children[i].props.menuName}
