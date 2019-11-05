@@ -13,7 +13,7 @@ const DragDropFile = (props) => {
     evt.stopPropagation()
     evt.preventDefault()
     const files = evt.dataTransfer.files
-    if (files && files[0]) this.props.handleFile(files[0])
+    if (files && files[0]) props.handleFile(files[0])
   }
   return (
     <div
