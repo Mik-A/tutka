@@ -13,7 +13,8 @@ export const uploadedFile = (state = null, action) => {
   const data = {
     data: action.data,
     fileName: action.fileName,
-    cols: action.cols
+    cols: action.cols,
+    json: action.json
   }
   switch (action.type) {
     case 'FILE_DATA':

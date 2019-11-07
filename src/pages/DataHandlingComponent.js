@@ -1,18 +1,21 @@
 import React from 'react'
 import XLSX from 'xlsx'
+import XLSO from 'xlso'
 import { connect } from 'react-redux'
+import ReactJson from 'react-json-view'
 
 import Slider from '../components/Slider'
 import Charts from '../components/Charts'
 import Table from './Table'
 import DragDropFile from '../components/DragDropFile'
+import DataInput from '../components/DataInputFile'
 
 import useRelevantRows from '../dataIntelligence/useRelevantRows'
-import { FILE_TYPES } from '../constants/'
 import { fetchData, fileData } from '../reducers/'
 
-class DataHandlingComponent extends React.Component {
-  handleFile = (file) => {
+const DataHandlingComponent = (props) => {
+  const relevant = useRelevantRows
+  const handleFile = (file) => {
     /* Boilerplate to set up FileReader */
     const reader = new FileReader()
     const rABS = !!reader.readAsBinaryString
@@ -20,6 +23,7 @@ class DataHandlingComponent extends React.Component {
       /* Parse data */
       const bstr = e.target.result
       const wb = XLSX.read(bstr, { type: rABS ? 'binary' : 'array' })
+      // parse the workbook to a js array
       /* Get first worksheet */
       // see an array of sheetnames for future console.log("wb.SheetNames", wb.SheetNames);
       const wsname = wb.SheetNames[0]
@@ -29,72 +33,68 @@ class DataHandlingComponent extends React.Component {
       const cols = make_cols(ws['!ref'])
       //   data: [] /* Array of Arrays e.g. [["a","b"],[1,2]] */,
       //   cols: [] /* Array of column objects e.g. { name: "C", K: 2 } */,
-      this.props.fileData(data, file.name, cols)
+
+      const rows = XLSO.parseWorkbook(wb, 0, 0)
+      const jsonData = JSON.stringify(rows)
+
+      props.fileData(data, file.name, cols, rows)
     }
     if (rABS) reader.readAsBinaryString(file)
     else reader.readAsArrayBuffer(file)
   }
-  exportFile = () => {
+  const exportFile = () => {
     /* convert state to workbook */
-    const ws = XLSX.utils.aoa_to_sheet(this.props.uploadedData.data)
+    const ws = XLSX.utils.aoa_to_sheet(props.uploadedData.data)
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'SheetJS')
 
     /* generate XLSX file and send to client */
     XLSX.writeFile(wb, 'sheetjs.xlsx')
   }
-  render() {
-    let data,
-      fileName,
-      cols = null
-    if (this.props.uploadedData) {
-      data = this.props.uploadedData.data
-      fileName = this.props.uploadedData.fileName
-      cols = this.props.uploadedData.cols
-    }
-    return (
-      <DragDropFile handleFile={this.handleFile}>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <div>
-            <DataInput
-              handleFile={this.handleFile}
-              fileName={!fileName ? 'No file selected' : fileName}
-            />
-          </div>
+  let data,
+    fileName,
+    cols,
+    json = null
+  if (props.uploadedData) {
+    data = props.uploadedData.data
+    fileName = props.uploadedData.fileName
+    cols = props.uploadedData.cols
+    json = props.uploadedData.json
+  }
+  return (
+    <DragDropFile handleFile={handleFile}>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div>
+          <DataInput
+            handleFile={handleFile}
+            fileName={!fileName ? 'No file selected' : fileName}
+          />
         </div>
-        {/* <div className="row">
+      </div>
+      {/* <div className="row">
           <div className="col-xs-12">
             <button
-              disabled={!this.props.uploadedData.data.length}
+              disabled={!props.uploadedData.data.length}
               className="btn btn-success"
-              onClick={this.exportFile}
+              onClick={exportFile}
             >
               Export
             </button>
           </div>
         </div> */}
-        {data && data.length > 0 && (
-          <Slider>
-            <Table data={data} cols={cols} menuName='Table' />
-            <Charts
-              menuName='Charts'
-              data={useRelevantRows(data)}
-              //   cols={cols}
-            />
-            <div menuName='Json'>
-              Here comes JSON<p>here</p>
-            </div>
-            <div menuName='Api'>
-              Here comes API links etc<p>here</p>
-            </div>
-            <div menuName='Plugins'>
-              Here comes WP and other plugins<p>here</p>
-            </div>
-          </Slider>
-        )}
-      </DragDropFile>
-    )
-  }
+      {data && data.length > 0 && (
+        <Slider>
+          <Table data={data} cols={cols} menuName='Table' />
+          <Charts menuName='Charts' data={relevant(data)} />
+          <ReactJson menuName='API Response' src={[json]} />
+
+          <div menuName='Plugins'>
+            Here comes WP and other plugins<p>here</p>
+          </div>
+        </Slider>
+      )}
+    </DragDropFile>
+  )
 }
 
 /*
@@ -102,49 +102,12 @@ class DataHandlingComponent extends React.Component {
   usage: <DataInput handleFile={callback} />
     handleFile(file:File):void;
 */
-const DataInput = (props) => {
-  const handleChange = (e) => {
-    const files = e.target.files
-    if (files && files[0]) props.handleFile(files[0])
-  }
-  return (
-    <>
-      <form className='form flex-center flex-column'>
-        <div
-          style={
-            props.fileName !== 'No file selected'
-              ? {
-                  transform: 'scale(0.75)',
-                  transition: '0.1s linear',
-                  marginTop: 10
-                }
-              : { marginTop: 50 }
-          }
-        >
-          <label htmlFor='file' className='form-group form-control'>
-            Upload data tables
-            <input
-              type='file'
-              className=''
-              id='file'
-              accept={FILE_TYPES}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div style={{ marginTop: 40, padding: '1em 2em', color: 'silver' }}>
-          {props.fileName}
-        </div>
-      </form>
-    </>
-  )
-}
 
 /* generate an array of column objects */
 const make_cols = (refstr) => {
   let o = [],
     C = XLSX.utils.decode_range(refstr).e.c + 1
-  for (var i = 0; i < C; ++i) o[i] = { name: XLSX.utils.encode_col(i), key: i }
+  for (let i = 0; i < C; ++i) o[i] = { name: XLSX.utils.encode_col(i), key: i }
   return o
 }
 
