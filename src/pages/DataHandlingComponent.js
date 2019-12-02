@@ -84,12 +84,15 @@ const DataHandlingComponent = (props) => {
         </div> */}
       {data && data.length > 0 && (
         <Slider>
-          <Table data={data} cols={cols} menuName='Table' />
+          <Table menuName='Table' data={data} cols={cols} />
           <Charts menuName='Charts' data={relevant(data)} />
           <ReactJson menuName='API Response' src={[json]} />
-
+          <div menuName='API Endpoints'>
+            Here comes API endpoints and instructions and links
+          </div>
           <div menuName='Plugins'>
-            Here comes WP and other plugins<p>here</p>
+            Here comes WP and other plugins
+            <p>to embed and distribute the data</p>
           </div>
         </Slider>
       )}
