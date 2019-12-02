@@ -2,6 +2,12 @@
     min-width: 50vw;
     width: 100%;
     max-width: 70vw;
+    max-height: max-content;
+}
+
+.stable {
+    height: calc(100vh - 28rem);
+    max-height: max-content;
 }
 
 .circle-small {
