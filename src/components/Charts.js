@@ -21,38 +21,44 @@ const Charts = (props) => {
       return obj
     }, {})
   )
-  const XAxis = output.map((x) => Object.keys(x)[0])[0]
-
+  const XAxisVal = output.filter(Boolean).map((x) => Object.keys(x)[0])[0]
+  const colorArr = [
+    // mock & temp colors
+    '#666',
+    '#FF6633',
+    '#00B3E6',
+    '#B34D4D',
+    '#6680B3',
+    '#66991A',
+    '#FF99E6'
+  ]
   return (
     <ResponsiveContainer>
-      <BarChart
-        width={500}
-        height={300}
+      <LineChart
+        width={'100%'}
+        height={'100%'}
         data={output}
         margin={{
           top: 5,
           right: 30,
           left: 20,
-          bottom: 5
+          bottom: 50
         }}
       >
         {/* <CartesianGrid strokeDasharray='3 3' /> */}
-        <XAxis dataKey={XAxis} />
+        <XAxis dataKey={XAxisVal} />
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar
-          type='monotone'
-          dataKey={output.map((x) => Object.keys(x)[1])[0]}
-          stroke='#8884d8'
-          // activeDot={{ r: 8 }}
-        />
-        <Bar
-          type='monotone'
-          dataKey={output.map((x) => Object.keys(x)[2])[0]}
-          stroke='#82ca9d'
-        />
-      </BarChart>
+        {labels.map((x, i) => (
+          <Line
+            type='monotone'
+            dataKey={labels[i]}
+            stroke={colorArr[i]}
+            dot={{ r: 0 }}
+          />
+        ))}
+      </LineChart>
     </ResponsiveContainer>
   )
 }
