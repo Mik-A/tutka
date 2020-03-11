@@ -1,4 +1,4 @@
-## UI fro uploading sheet data
+## UI for uploading sheet data
 
 small project of mine to create API on the fly
 
